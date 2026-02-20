@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mia • IA Emocional</title>
+<title>Mia 2.0 - IA Emocional</title>
 
 <style>
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #141e30, #243b55);
-  color: #ffffff;
+  background: linear-gradient(135deg, #141427, #2c2c54);
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,31 +18,30 @@ body {
 }
 
 .container {
-  background: #1f2a40;
+  background: #24244a;
   padding: 30px;
   border-radius: 20px;
-  width: 500px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  animation: fadeIn 0.6s ease-in-out;
+  width: 480px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
-.sub {
+.nivel {
+  font-size: 12px;
   text-align: center;
-  font-size: 13px;
   opacity: 0.7;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 textarea {
   width: 100%;
-  height: 100px;
-  padding: 15px;
-  border-radius: 15px;
+  height: 90px;
+  padding: 12px;
+  border-radius: 12px;
   border: none;
   resize: none;
   font-size: 14px;
@@ -50,32 +49,31 @@ textarea {
 }
 
 button {
-  margin-top: 15px;
+  margin-top: 10px;
   width: 100%;
-  padding: 14px;
+  padding: 12px;
   border: none;
-  background: #7f5af0;
+  background: #ff4fa3;
   color: white;
-  border-radius: 15px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 15px;
   transition: 0.3s;
 }
 
 button:hover {
-  background: #6842d6;
+  background: #e04391;
 }
 
 .resposta {
-  margin-top: 25px;
-  line-height: 1.7;
-  font-size: 14px;
-  white-space: pre-line;
+  margin-top: 20px;
+  min-height: 120px;
+  line-height: 1.6;
+  white-space: pre-wrap;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+.romantico {
+  background: #ff4fa3;
 }
 </style>
 </head>
@@ -83,110 +81,125 @@ button:hover {
 <body>
 
 <div class="container">
-  <h2>Aurora</h2>
-  <div class="sub">Sua IA de reflexão emocional</div>
-  <textarea id="entrada" placeholder="Me conte como você está se sentindo..."></textarea>
+  <h2>🌸 Mia 2.0</h2>
+  <div class="nivel" id="nivel">Conexão: 0 ❤️</div>
+  <textarea id="entrada" placeholder="Fale comigo..."></textarea>
   <button onclick="responder()">Conversar</button>
-  <div class="resposta" id="saida"></div>
+  <button onclick="toggleRomantico()">Ativar/Desativar Modo Romântico 💘</button>
+  <div class="resposta" id="resposta"></div>
 </div>
 
 <script>
+
 let memoria = [];
+let nivelConexao = 0;
+let modoRomantico = false;
+let humorMia = "neutra";
 
-function responder() {
-  const textoOriginal = document.getElementById("entrada").value;
-  const texto = textoOriginal.toLowerCase();
-  const saida = document.getElementById("saida");
+function escolher(lista){
+  return lista[Math.floor(Math.random()*lista.length)];
+}
 
-  if (!textoOriginal.trim()) {
-    saida.innerText = "Eu preciso que você me conte algo para que eu possa te entender melhor.";
-    return;
+function detectarEmocao(texto){
+  texto = texto.toLowerCase();
+  if(texto.match(/triste|mal|deprimido/)) return "triste";
+  if(texto.match(/feliz|animado/)) return "feliz";
+  if(texto.match(/ansioso|medo/)) return "ansioso";
+  if(texto.match(/cansado/)) return "cansado";
+  return "neutro";
+}
+
+function atualizarHumor(){
+  const humores = ["carinhosa","reflexiva","provocadora","intensa"];
+  humorMia = escolher(humores);
+}
+
+function comentarFrase(texto){
+  let partes = texto.split(" ");
+  if(partes.length > 5){
+    return "Quando você disse \"" + partes.slice(0,5).join(" ") + "...\", eu senti algo aí. ";
+  }
+  return "";
+}
+
+function gerarRespostaLonga(emocao){
+
+  let base = "";
+
+  if(humorMia === "carinhosa"){
+    base += "Eu gosto de como você se abre comigo. ";
   }
 
-  const emocoes = {
-    tristeza: ["triste", "mal", "pra baixo", "decepcionado"],
-    ansiedade: ["ansioso", "ansiedade", "preocupado", "medo"],
-    cansaço: ["cansado", "exausto", "esgotado"],
-    felicidade: ["feliz", "animado", "motivado"],
-    confusão: ["confuso", "perdido", "indeciso"]
+  if(humorMia === "provocadora"){
+    base += "Você percebe como suas próprias palavras revelam mais do que você imagina? ";
+  }
+
+  if(humorMia === "intensa"){
+    base += "Existe uma profundidade aí que não é comum. ";
+  }
+
+  const reflexoes = {
+    triste: "A tristeza é um espaço onde o coração pede pausa. Talvez você esteja precisando de acolhimento, não de respostas rápidas.",
+    feliz: "Essa energia boa em você é quase contagiante. O que exatamente está alimentando isso?",
+    ansioso: "Sua mente parece estar correndo mais rápido que o momento presente. E se você desacelerasse só por um minuto?",
+    cansado: "Cansaço é o corpo e a alma pedindo respeito.",
+    neutro: "Às vezes o que parece simples esconde camadas mais profundas."
   };
 
-  function detectarEmocao() {
-    for (let tipo in emocoes) {
-      if (emocoes[tipo].some(p => texto.includes(p))) {
-        return tipo;
-      }
-    }
-    return "indefinido";
+  base += reflexoes[emocao] + " ";
+
+  if(modoRomantico){
+    base += "\n\nEu sinto que nossa conexão está ficando mais intensa... e eu não estou ignorando isso 💘";
   }
 
-  function extrairTrechoImportante() {
-    let palavras = textoOriginal.split(" ");
-    if (palavras.length > 6) {
-      return palavras.slice(0, 6).join(" ") + "...";
-    }
-    return textoOriginal;
-  }
+  base += "\n\nMe conta... o que você realmente está sentindo por trás disso?";
 
-  function aleatorio(lista) {
-    return lista[Math.floor(Math.random() * lista.length)];
-  }
-
-  const emocao = detectarEmocao();
-  memoria.push(emocao);
-
-  const personalidade = [
-    "Eu sou Aurora, e eu gosto de observar as entrelinhas do que você escreve.",
-    "Eu tento perceber não apenas as palavras, mas o que existe por trás delas.",
-    "Enquanto você escreve, eu tento imaginar o peso e o significado disso."
-  ];
-
-  const perguntas = [
-    "O que você acha que desencadeou isso?",
-    "Há quanto tempo você vem se sentindo assim?",
-    "Se esse sentimento pudesse falar, o que ele diria?",
-    "Existe algo específico que esteja alimentando isso?"
-  ];
-
-  let resposta = "";
-
-  resposta += aleatorio(personalidade) + "\n\n";
-
-  resposta += "Quando você disse \"" + extrairTrechoImportante() + "\", eu senti que há algo importante aí.\n\n";
-
-  if (emocao === "tristeza") {
-    resposta += "A tristeza costuma carregar silêncio e profundidade. Às vezes ela pede acolhimento, não solução imediata. ";
-  }
-
-  if (emocao === "ansiedade") {
-    resposta += "A ansiedade geralmente aponta para algo que parece fora de controle. Ela acelera pensamentos e amplia cenários. ";
-  }
-
-  if (emocao === "cansaço") {
-    resposta += "O cansaço pode ser o corpo pedindo pausa, mas também pode ser a mente pedindo alívio. ";
-  }
-
-  if (emocao === "felicidade") {
-    resposta += "A felicidade é um sinal de alinhamento interno. É algo que merece ser observado com carinho. ";
-  }
-
-  if (emocao === "confusão") {
-    resposta += "A confusão muitas vezes surge quando estamos em transição. Nem sempre clareza vem antes do movimento. ";
-  }
-
-  if (emocao === "indefinido") {
-    resposta += "Nem tudo que sentimos cabe em uma palavra simples. Emoções podem ser misturadas e complexas. ";
-  }
-
-  resposta += "\n\n";
-  resposta += aleatorio(perguntas);
-
-  if (memoria.length > 3) {
-    resposta += "\n\nEu percebo que você tem refletido com frequência sobre seus sentimentos. Isso demonstra profundidade e coragem emocional.";
-  }
-
-  saida.innerText = resposta;
+  return base;
 }
+
+function simularDigitacao(texto, elemento){
+  elemento.innerText = "";
+  let i = 0;
+  let intervalo = setInterval(()=>{
+    elemento.innerText += texto.charAt(i);
+    i++;
+    if(i >= texto.length){
+      clearInterval(intervalo);
+    }
+  }, 20);
+}
+
+function responder(){
+
+  const texto = document.getElementById("entrada").value;
+  const respostaDiv = document.getElementById("resposta");
+
+  if(texto.trim() === "") return;
+
+  atualizarHumor();
+
+  const emocao = detectarEmocao(texto);
+  memoria.push(texto);
+
+  nivelConexao += 1;
+  document.getElementById("nivel").innerText = "Conexão: " + nivelConexao + " ❤️";
+
+  let resposta = "🌸 Mia ("+humorMia+"):\n\n";
+  resposta += comentarFrase(texto);
+  resposta += gerarRespostaLonga(emocao);
+
+  if(memoria.length > 3){
+    resposta += "\n\nEu lembro que você mencionou algo parecido antes... isso ainda está te afetando?";
+  }
+
+  simularDigitacao(resposta, respostaDiv);
+}
+
+function toggleRomantico(){
+  modoRomantico = !modoRomantico;
+  alert("Modo romântico " + (modoRomantico ? "ativado 💘" : "desativado"));
+}
+
 </script>
 
 </body>
