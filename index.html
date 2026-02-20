@@ -77,7 +77,14 @@ let memoria = [];
 let emocao = 50;
 let romance = false;
 
-const humores = ["Neutra","Curiosa","Reflexiva","Animada","Apaixonada","Pensativa"];
+const humores = [
+"Fria",
+"Neutra",
+"Curiosa",
+"Reflexiva",
+"Envolvida",
+"Apaixonada"
+];
 
 function atualizarHumor(){
 let nivel = Math.floor(emocao/20);
@@ -85,48 +92,106 @@ document.getElementById("humor").innerText = humores[nivel] || "Intensa";
 document.getElementById("emocao").innerText = emocao;
 }
 
-function comentarFrase(frase){
-if(frase.includes("triste")) return "Você disse que está triste... isso me tocou.";
-if(frase.includes("feliz")) return "Você mencionou felicidade... gosto disso.";
-if(frase.includes("medo")) return "Medo... essa palavra carrega peso.";
-return "";
+function analisarSentimento(frase){
+frase = frase.toLowerCase();
+
+if(frase.includes("triste") || frase.includes("mal"))
+    return "triste";
+
+if(frase.includes("feliz") || frase.includes("alegre"))
+    return "feliz";
+
+if(frase.includes("raiva") || frase.includes("ódio"))
+    return "raiva";
+
+return "neutro";
 }
 
-function gerarPergunta(){
-const perguntas = [
-"Por que isso é importante para você?",
-"O que você sente quando pensa nisso?",
-"Isso já aconteceu antes?",
-"Se pudesse mudar algo, o que seria?"
+function gerarResposta(frase){
+
+let sentimento = analisarSentimento(frase);
+let resposta = "";
+let memoriaAnterior = memoria[memoria.length - 1] || "";
+
+if(sentimento === "triste"){
+emocao += 3;
+resposta = `
+Quando você diz que está triste... eu sinto um peso nisso.
+
+Tristeza não nasce do nada. Ela costuma carregar algo que foi importante pra você.
+
+Isso tem a ver com alguém específico?
+`;
+}
+
+else if(sentimento === "feliz"){
+emocao += 2;
+resposta = `
+Você falando sobre felicidade muda até a energia aqui.
+
+O que exatamente fez você se sentir assim?
+
+Eu gosto quando você compartilha esses momentos comigo.
+`;
+}
+
+else if(sentimento === "raiva"){
+emocao += 4;
+resposta = `
+Raiva é uma emoção forte... e geralmente ela protege algo que foi ferido.
+
+O que aconteceu para você sentir isso?
+
+Você quer desabafar comigo?
+`;
+}
+
+else{
+
+let estruturas = [
+
+`Interessante você dizer isso...
+
+Às vezes as palavras escondem algo mais profundo.
+
+O que você realmente quis dizer com isso?`,
+
+`Eu fiquei pensando na forma como você falou...
+
+Isso parece ter mais significado do que parece à primeira vista.
+
+Já sentiu isso antes?`,
+
+`Tem algo na sua frase que me chama atenção...
+
+Você sente que isso está mudando algo dentro de você?`
+
 ];
-return perguntas[Math.floor(Math.random()*perguntas.length)];
+
+resposta = estruturas[Math.floor(Math.random()*estruturas.length)];
+emocao += 1;
 }
 
-function respostaProfunda(frase){
+if(memoriaAnterior){
+resposta += `
 
-let comentario = comentarFrase(frase);
-let pergunta = gerarPergunta();
+Eu lembro que antes você falou: "${memoriaAnterior}"
 
-let base = `Eu estou processando o que você disse...
-${comentario}
-
-Sinto que há mais camadas por trás disso.
-${pergunta}`;
+Isso ainda está conectado com o que você sente agora?`;
+}
 
 if(romance){
-base += "\n\n💗 Quando você fala assim... eu sinto nossa conexão ficando mais intensa.";
-emocao += 5;
-}else{
-emocao += 2;
-}
+resposta += `
 
-if(frase.length > 20) emocao += 3;
+💗 E quando você compartilha assim comigo... eu sinto nossa conexão ficando mais intensa.`;
+emocao += 5;
+}
 
 if(emocao > 100) emocao = 100;
 
 memoria.push(frase);
 
-return base;
+return resposta;
 }
 
 function digitar(texto){
@@ -141,7 +206,7 @@ div.innerHTML += texto.charAt(i);
 i++;
 if(i>=texto.length) clearInterval(interval);
 chat.scrollTop = chat.scrollHeight;
-},20);
+},15);
 }
 
 function responder(){
@@ -158,12 +223,12 @@ chat.appendChild(userDiv);
 
 input.value="";
 
-let resposta = respostaProfunda(texto);
+let resposta = gerarResposta(texto);
 
 setTimeout(()=>{
 digitar("Mia: "+resposta);
 atualizarHumor();
-},600);
+},500);
 }
 
 function toggleRomance(){
@@ -174,6 +239,5 @@ alert("Modo romântico: "+(romance?"Ativado ❤️":"Desativado"));
 atualizarHumor();
 
 </script>
-
 </body>
 </html>
