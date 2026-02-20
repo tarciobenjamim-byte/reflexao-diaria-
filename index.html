@@ -95,64 +95,95 @@ button:hover {
 let memoriaEmocional = [];
 
 function gerarResposta() {
-  const texto = document.getElementById("sentimento").value.toLowerCase();
+  const textoOriginal = document.getElementById("sentimento").value;
+  const texto = textoOriginal.toLowerCase();
   const respostaDiv = document.getElementById("resposta");
-  const historicoDiv = document.getElementById("historico");
 
-  const categorias = {
-    triste: ["triste", "mal", "desanimado", "pra baixo"],
-    ansioso: ["ansioso", "ansiedade", "preocupado"],
-    feliz: ["feliz", "animado", "bem"],
-    cansado: ["cansado", "exausto", "esgotado"]
+  const emocoes = {
+    triste: ["triste", "mal", "desanimado", "pra baixo", "decepcionado"],
+    ansioso: ["ansioso", "ansiedade", "preocupado", "nervoso", "medo"],
+    feliz: ["feliz", "animado", "motivado", "bem", "ótimo"],
+    cansado: ["cansado", "exausto", "esgotado", "sem energia"],
+    confuso: ["confuso", "perdido", "sem direção", "indeciso"]
   };
 
-  const abertura = [
-    "Eu estou aqui com você.",
-    "Obrigado por compartilhar isso comigo.",
-    "Eu escuto o que você está sentindo."
-  ];
+  const intensificadores = ["muito", "demais", "extremamente", "bastante", "demais"];
 
-  const meio = [
-    "Seus sentimentos são válidos.",
-    "Isso faz parte da experiência humana.",
-    "Cada emoção carrega uma mensagem."
-  ];
-
-  const final = [
-    "Respire fundo e vá com calma.",
-    "Você já enfrentou desafios antes.",
-    "Um passo de cada vez já é suficiente."
-  ];
-
-  function aleatorio(lista) {
-    return lista[Math.floor(Math.random() * lista.length)];
-  }
-
-  let emocaoDetectada = "indefinido";
-
-  for (let categoria in categorias) {
-    if (categorias[categoria].some(p => texto.includes(p))) {
-      emocaoDetectada = categoria;
-      break;
+  function detectarEmocao() {
+    for (let categoria in emocoes) {
+      if (emocoes[categoria].some(p => texto.includes(p))) {
+        return categoria;
+      }
     }
+    return "indefinido";
   }
+
+  function temIntensidade() {
+    return intensificadores.some(p => texto.includes(p));
+  }
+
+  function gerarParagrafo(emocao, intenso) {
+    let base = "";
+
+    if (emocao === "triste") {
+      base = "A tristeza pode pesar no peito e fazer tudo parecer mais difícil. ";
+      base += "Às vezes ela vem silenciosa, outras vezes chega de forma intensa. ";
+      base += "Mas mesmo nos dias mais nublados, existe algo em você que continua resistindo. ";
+    }
+
+    if (emocao === "ansioso") {
+      base = "A ansiedade costuma acelerar os pensamentos e criar cenários que ainda nem aconteceram. ";
+      base += "Ela faz o futuro parecer urgente demais. ";
+      base += "Mas você não precisa resolver tudo agora. ";
+    }
+
+    if (emocao === "cansado") {
+      base = "O cansaço não é apenas físico, às vezes é emocional. ";
+      base += "Carregar responsabilidades e expectativas pode esgotar qualquer pessoa. ";
+      base += "Descansar também é produtividade. ";
+    }
+
+    if (emocao === "feliz") {
+      base = "Sentir felicidade é um sinal de conexão com algo positivo dentro de você. ";
+      base += "Momentos assim merecem ser reconhecidos e valorizados. ";
+      base += "Guarde essa sensação como combustível para os dias difíceis. ";
+    }
+
+    if (emocao === "confuso") {
+      base = "A confusão muitas vezes surge quando estamos crescendo ou mudando. ";
+      base += "Nem sempre ter todas as respostas é necessário. ";
+      base += "Às vezes o caminho se revela enquanto caminhamos. ";
+    }
+
+    if (emocao === "indefinido") {
+      base = "Os sentimentos nem sempre vêm com rótulos claros. ";
+      base += "Mas o simples fato de você refletir sobre eles já mostra consciência emocional. ";
+      base += "Isso é algo poderoso. ";
+    }
+
+    if (intenso) {
+      base += "Eu percebo que isso parece estar sendo muito intenso para você. ";
+      base += "Seja gentil consigo mesmo nesse processo. ";
+    }
+
+    base += "Respire fundo. Você está fazendo o melhor que pode neste momento.";
+
+    return base;
+  }
+
+  const emocaoDetectada = detectarEmocao();
+  const intensidade = temIntensidade();
 
   memoriaEmocional.push(emocaoDetectada);
 
-  let resposta =
-    aleatorio(abertura) + " " +
-    aleatorio(meio) + " " +
-    aleatorio(final);
+  let respostaFinal = gerarParagrafo(emocaoDetectada, intensidade);
 
-  if (memoriaEmocional.length > 1) {
-    resposta += " Eu percebo que você tem compartilhado bastante seus sentimentos recentemente, isso é um sinal de autoconhecimento.";
+  if (memoriaEmocional.length > 2) {
+    respostaFinal += " Eu noto que você tem compartilhado seus sentimentos com frequência. Isso demonstra coragem e autoconhecimento.";
   }
 
-  respostaDiv.innerText = resposta;
-
-  historicoDiv.innerText = "Histórico emocional: " + memoriaEmocional.join(", ");
+  respostaDiv.innerText = respostaFinal;
 }
 </script>
-
 </body>
 </html>
