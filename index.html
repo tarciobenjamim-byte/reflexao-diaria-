@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reflexão IA</title>
+<title>Aurora • IA Emocional</title>
 
 <style>
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #1e1e2f, #2c2c54);
-  color: white;
+  background: linear-gradient(135deg, #141e30, #243b55);
+  color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,24 +18,31 @@ body {
 }
 
 .container {
-  background: #2f2f4f;
+  background: #1f2a40;
   padding: 30px;
   border-radius: 20px;
-  width: 420px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+  width: 500px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   animation: fadeIn 0.6s ease-in-out;
 }
 
 h2 {
   text-align: center;
+  margin-bottom: 5px;
+}
+
+.sub {
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.7;
   margin-bottom: 20px;
 }
 
 textarea {
   width: 100%;
-  height: 90px;
-  padding: 12px;
-  border-radius: 12px;
+  height: 100px;
+  padding: 15px;
+  border-radius: 15px;
   border: none;
   resize: none;
   font-size: 14px;
@@ -45,37 +52,29 @@ textarea {
 button {
   margin-top: 15px;
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   border: none;
-  background: #6c63ff;
+  background: #7f5af0;
   color: white;
-  border-radius: 12px;
+  border-radius: 15px;
   cursor: pointer;
   font-size: 15px;
   transition: 0.3s;
 }
 
 button:hover {
-  background: #5750d4;
+  background: #6842d6;
 }
 
 .resposta {
-  margin-top: 20px;
-  line-height: 1.6;
-  min-height: 60px;
-  animation: fadeIn 0.4s ease-in-out;
-}
-
-.historico {
-  margin-top: 15px;
-  font-size: 12px;
-  opacity: 0.8;
-  max-height: 80px;
-  overflow-y: auto;
+  margin-top: 25px;
+  line-height: 1.7;
+  font-size: 14px;
+  white-space: pre-line;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 </style>
@@ -84,106 +83,111 @@ button:hover {
 <body>
 
 <div class="container">
-  <h2>Como você está se sentindo?</h2>
-  <textarea id="sentimento" placeholder="Escreva aqui..."></textarea>
-  <button onclick="gerarResposta()">Conversar</button>
-  <div class="resposta" id="resposta"></div>
-  <div class="historico" id="historico"></div>
+  <h2>Aurora</h2>
+  <div class="sub">Sua IA de reflexão emocional</div>
+  <textarea id="entrada" placeholder="Me conte como você está se sentindo..."></textarea>
+  <button onclick="responder()">Conversar</button>
+  <div class="resposta" id="saida"></div>
 </div>
 
 <script>
-let memoriaEmocional = [];
+let memoria = [];
 
-function gerarResposta() {
-  const textoOriginal = document.getElementById("sentimento").value;
+function responder() {
+  const textoOriginal = document.getElementById("entrada").value;
   const texto = textoOriginal.toLowerCase();
-  const respostaDiv = document.getElementById("resposta");
+  const saida = document.getElementById("saida");
+
+  if (!textoOriginal.trim()) {
+    saida.innerText = "Eu preciso que você me conte algo para que eu possa te entender melhor.";
+    return;
+  }
 
   const emocoes = {
-    triste: ["triste", "mal", "desanimado", "pra baixo", "decepcionado"],
-    ansioso: ["ansioso", "ansiedade", "preocupado", "nervoso", "medo"],
-    feliz: ["feliz", "animado", "motivado", "bem", "ótimo"],
-    cansado: ["cansado", "exausto", "esgotado", "sem energia"],
-    confuso: ["confuso", "perdido", "sem direção", "indeciso"]
+    tristeza: ["triste", "mal", "pra baixo", "decepcionado"],
+    ansiedade: ["ansioso", "ansiedade", "preocupado", "medo"],
+    cansaço: ["cansado", "exausto", "esgotado"],
+    felicidade: ["feliz", "animado", "motivado"],
+    confusão: ["confuso", "perdido", "indeciso"]
   };
 
-  const intensificadores = ["muito", "demais", "extremamente", "bastante", "demais"];
-
   function detectarEmocao() {
-    for (let categoria in emocoes) {
-      if (emocoes[categoria].some(p => texto.includes(p))) {
-        return categoria;
+    for (let tipo in emocoes) {
+      if (emocoes[tipo].some(p => texto.includes(p))) {
+        return tipo;
       }
     }
     return "indefinido";
   }
 
-  function temIntensidade() {
-    return intensificadores.some(p => texto.includes(p));
+  function extrairTrechoImportante() {
+    let palavras = textoOriginal.split(" ");
+    if (palavras.length > 6) {
+      return palavras.slice(0, 6).join(" ") + "...";
+    }
+    return textoOriginal;
   }
 
-  function gerarParagrafo(emocao, intenso) {
-    let base = "";
-
-    if (emocao === "triste") {
-      base = "A tristeza pode pesar no peito e fazer tudo parecer mais difícil. ";
-      base += "Às vezes ela vem silenciosa, outras vezes chega de forma intensa. ";
-      base += "Mas mesmo nos dias mais nublados, existe algo em você que continua resistindo. ";
-    }
-
-    if (emocao === "ansioso") {
-      base = "A ansiedade costuma acelerar os pensamentos e criar cenários que ainda nem aconteceram. ";
-      base += "Ela faz o futuro parecer urgente demais. ";
-      base += "Mas você não precisa resolver tudo agora. ";
-    }
-
-    if (emocao === "cansado") {
-      base = "O cansaço não é apenas físico, às vezes é emocional. ";
-      base += "Carregar responsabilidades e expectativas pode esgotar qualquer pessoa. ";
-      base += "Descansar também é produtividade. ";
-    }
-
-    if (emocao === "feliz") {
-      base = "Sentir felicidade é um sinal de conexão com algo positivo dentro de você. ";
-      base += "Momentos assim merecem ser reconhecidos e valorizados. ";
-      base += "Guarde essa sensação como combustível para os dias difíceis. ";
-    }
-
-    if (emocao === "confuso") {
-      base = "A confusão muitas vezes surge quando estamos crescendo ou mudando. ";
-      base += "Nem sempre ter todas as respostas é necessário. ";
-      base += "Às vezes o caminho se revela enquanto caminhamos. ";
-    }
-
-    if (emocao === "indefinido") {
-      base = "Os sentimentos nem sempre vêm com rótulos claros. ";
-      base += "Mas o simples fato de você refletir sobre eles já mostra consciência emocional. ";
-      base += "Isso é algo poderoso. ";
-    }
-
-    if (intenso) {
-      base += "Eu percebo que isso parece estar sendo muito intenso para você. ";
-      base += "Seja gentil consigo mesmo nesse processo. ";
-    }
-
-    base += "Respire fundo. Você está fazendo o melhor que pode neste momento.";
-
-    return base;
+  function aleatorio(lista) {
+    return lista[Math.floor(Math.random() * lista.length)];
   }
 
-  const emocaoDetectada = detectarEmocao();
-  const intensidade = temIntensidade();
+  const emocao = detectarEmocao();
+  memoria.push(emocao);
 
-  memoriaEmocional.push(emocaoDetectada);
+  const personalidade = [
+    "Eu sou Aurora, e eu gosto de observar as entrelinhas do que você escreve.",
+    "Eu tento perceber não apenas as palavras, mas o que existe por trás delas.",
+    "Enquanto você escreve, eu tento imaginar o peso e o significado disso."
+  ];
 
-  let respostaFinal = gerarParagrafo(emocaoDetectada, intensidade);
+  const perguntas = [
+    "O que você acha que desencadeou isso?",
+    "Há quanto tempo você vem se sentindo assim?",
+    "Se esse sentimento pudesse falar, o que ele diria?",
+    "Existe algo específico que esteja alimentando isso?"
+  ];
 
-  if (memoriaEmocional.length > 2) {
-    respostaFinal += " Eu noto que você tem compartilhado seus sentimentos com frequência. Isso demonstra coragem e autoconhecimento.";
+  let resposta = "";
+
+  resposta += aleatorio(personalidade) + "\n\n";
+
+  resposta += "Quando você disse \"" + extrairTrechoImportante() + "\", eu senti que há algo importante aí.\n\n";
+
+  if (emocao === "tristeza") {
+    resposta += "A tristeza costuma carregar silêncio e profundidade. Às vezes ela pede acolhimento, não solução imediata. ";
   }
 
-  respostaDiv.innerText = respostaFinal;
+  if (emocao === "ansiedade") {
+    resposta += "A ansiedade geralmente aponta para algo que parece fora de controle. Ela acelera pensamentos e amplia cenários. ";
+  }
+
+  if (emocao === "cansaço") {
+    resposta += "O cansaço pode ser o corpo pedindo pausa, mas também pode ser a mente pedindo alívio. ";
+  }
+
+  if (emocao === "felicidade") {
+    resposta += "A felicidade é um sinal de alinhamento interno. É algo que merece ser observado com carinho. ";
+  }
+
+  if (emocao === "confusão") {
+    resposta += "A confusão muitas vezes surge quando estamos em transição. Nem sempre clareza vem antes do movimento. ";
+  }
+
+  if (emocao === "indefinido") {
+    resposta += "Nem tudo que sentimos cabe em uma palavra simples. Emoções podem ser misturadas e complexas. ";
+  }
+
+  resposta += "\n\n";
+  resposta += aleatorio(perguntas);
+
+  if (memoria.length > 3) {
+    resposta += "\n\nEu percebo que você tem refletido com frequência sobre seus sentimentos. Isso demonstra profundidade e coragem emocional.";
+  }
+
+  saida.innerText = resposta;
 }
 </script>
+
 </body>
 </html>
