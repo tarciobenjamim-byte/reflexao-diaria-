@@ -1,88 +1,152 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Reflexão Diária</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #667eea, #764ba2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflexão Diária</title>
 
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      width: 400px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
 
-    textarea {
-      width: 100%;
-      height: 80px;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      resize: none;
-    }
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
 
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      border: none;
-      background: #667eea;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+h2 {
+  margin-bottom: 15px;
+}
 
-    button:hover {
-      background: #5563c1;
-    }
+textarea {
+  width: 100%;
+  height: 90px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  resize: none;
+  font-size: 14px;
+}
 
-    .resposta {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  background: #667eea;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #5563c1;
+}
+
+.resposta {
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="container">
-    <h2>Como você está se sentindo hoje?</h2>
-    <textarea id="sentimento" placeholder="Digite aqui..."></textarea>
-    <button onclick="gerarResposta()">Enviar</button>
-    <div class="resposta" id="resposta"></div>
-  </div>
+<div class="container">
+  <h2>Como você está se sentindo hoje?</h2>
+  <textarea id="sentimento" placeholder="Digite aqui..."></textarea>
+  <button onclick="gerarResposta()">Enviar</button>
+  <div class="resposta" id="resposta"></div>
+</div>
 
-  <script>
-    function gerarResposta() {
-      let texto = document.getElementById("sentimento").value.toLowerCase();
-      let resposta = "";
+<script>
+function gerarResposta() {
+  const texto = document.getElementById("sentimento").value.toLowerCase();
+  const respostaDiv = document.getElementById("resposta");
 
-      if (texto.includes("triste")) {
-        resposta = "Sinto muito que você esteja se sentindo assim. Dias difíceis passam, você é mais forte do que imagina.";
-      } 
-      else if (texto.includes("ansioso")) {
-        resposta = "Respire fundo. A ansiedade é só um momento, não é quem você é.";
-      } 
-      else if (texto.includes("feliz")) {
-        resposta = "Que coisa maravilhosa! Aproveite esse momento e espalhe essa energia.";
-      } 
-      else {
-        resposta = "Obrigado por compartilhar seus sentimentos. Lembre-se que você não está sozinho.";
-      }
+  const bancoEmocional = {
+    triste: ["triste", "mal", "desanimado", "chateado", "pra baixo"],
+    ansioso: ["ansioso", "ansiedade", "preocupado", "nervoso"],
+    feliz: ["feliz", "animado", "motivado", "bem", "ótimo"],
+    cansado: ["cansado", "exausto", "sem energia", "esgotado"],
+    confuso: ["confuso", "perdido", "sem direção", "indeciso"]
+  };
 
-      document.getElementById("resposta").innerText = resposta;
+  const abertura = [
+    "Obrigado por confiar em compartilhar isso.",
+    "Eu escuto você.",
+    "O que você está sentindo é importante.",
+    "Sua experiência merece atenção."
+  ];
+
+  const validacao = [
+    "É completamente humano se sentir assim às vezes.",
+    "Sentimentos fazem parte da nossa jornada.",
+    "Nada do que você sente é inválido.",
+    "Você não está errado por se sentir assim."
+  ];
+
+  const reflexao = [
+    "Talvez esse momento esteja tentando te ensinar algo.",
+    "Às vezes o desconforto é um sinal de crescimento.",
+    "Momentos difíceis também moldam nossa força.",
+    "Cada fase tem algo a revelar."
+  ];
+
+  const encorajamento = [
+    "Seja gentil consigo mesmo.",
+    "Respire fundo e vá com calma.",
+    "Você já superou outras fases antes.",
+    "Um passo de cada vez já é suficiente."
+  ];
+
+  const intensificadores = ["muito", "demais", "extremamente", "bastante"];
+
+  function aleatorio(lista) {
+    return lista[Math.floor(Math.random() * lista.length)];
+  }
+
+  let emocaoDetectada = null;
+  let intensidade = intensificadores.some(p => texto.includes(p));
+
+  for (let emocao in bancoEmocional) {
+    if (bancoEmocional[emocao].some(p => texto.includes(p))) {
+      emocaoDetectada = emocao;
+      break;
     }
-  </script>
+  }
+
+  let respostaFinal = "";
+
+  respostaFinal += aleatorio(abertura) + " ";
+  respostaFinal += aleatorio(validacao) + " ";
+
+  if (emocaoDetectada) {
+    respostaFinal += aleatorio(reflexao) + " ";
+  }
+
+  if (intensidade) {
+    respostaFinal += "Eu percebo que isso parece estar sendo intenso para você. ";
+  }
+
+  respostaFinal += aleatorio(encorajamento);
+
+  respostaDiv.innerText = respostaFinal;
+}
+</script>
 
 </body>
 </html>
