@@ -1,180 +1,177 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mia 2.1</title>
+<title>🌸 Mia 3.0</title>
 
 <style>
 body{
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#1b1b2f,#2c2c54);
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  margin:0;
+background: linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+color:white;
+font-family: Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
 }
 
 .container{
-  background:#24244a;
-  padding:25px;
-  border-radius:15px;
-  width:450px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+width:420px;
+background:#222;
+padding:20px;
+border-radius:15px;
+box-shadow:0 0 20px rgba(255,0,100,0.5);
 }
 
-h2{text-align:center;}
+h1{text-align:center;}
 
-.nivel{
-  text-align:center;
-  font-size:13px;
-  opacity:0.8;
-  margin-bottom:10px;
+#chat{
+height:260px;
+overflow-y:auto;
+background:#111;
+padding:10px;
+border-radius:10px;
+margin-bottom:10px;
 }
 
-textarea{
-  width:100%;
-  height:80px;
-  border:none;
-  border-radius:10px;
-  padding:10px;
-  resize:none;
+input{
+width:100%;
+padding:10px;
+border:none;
+border-radius:8px;
+margin-bottom:10px;
 }
 
 button{
-  width:100%;
-  padding:10px;
-  margin-top:8px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:bold;
-  background:#ff4fa3;
-  color:white;
+width:100%;
+padding:10px;
+border:none;
+border-radius:8px;
+background:#ff2e88;
+color:white;
+cursor:pointer;
+margin-bottom:5px;
 }
 
-.resposta{
-  margin-top:15px;
-  min-height:120px;
-  white-space:pre-wrap;
-  line-height:1.5;
-}
-
-.romantico{
-  background:linear-gradient(135deg,#3a0ca3,#ff4fa3);
-}
+.mia{color:#ff69b4;}
+.user{color:#00ffff;}
+.status{font-size:12px;color:#aaa;text-align:center;margin-bottom:10px;}
 </style>
 </head>
-
 <body>
 
-<div class="container" id="container">
-<h2>🌸 Mia 2.1</h2>
-<div class="nivel" id="nivel"></div>
-<textarea id="entrada" placeholder="Fale comigo..."></textarea>
+<div class="container">
+<h1>🌸 Mia 3.0</h1>
+<div class="status">Humor: <span id="humor">Neutra</span> | Emoção: <span id="emocao">50</span></div>
+<div id="chat"></div>
+<input type="text" id="input" placeholder="Digite algo...">
 <button onclick="responder()">Conversar</button>
-<button onclick="toggleRomantico()">Modo Romântico 💘</button>
-<div class="resposta" id="resposta"></div>
+<button onclick="toggleRomance()">Ativar/Desativar Modo Romântico ❤️</button>
 </div>
 
 <script>
 
-let memoria = JSON.parse(localStorage.getItem("memoriaMia")) || [];
-let nivelConexao = parseInt(localStorage.getItem("nivelMia")) || 0;
-let modoRomantico = false;
-let digitandoIntervalo;
+let memoria = [];
+let emocao = 50;
+let romance = false;
 
-atualizarNivel();
+const humores = ["Neutra","Curiosa","Reflexiva","Animada","Apaixonada","Pensativa"];
 
-function atualizarNivel(){
-  document.getElementById("nivel").innerText = 
-  "Conexão: " + nivelConexao + " ❤️";
+function atualizarHumor(){
+let nivel = Math.floor(emocao/20);
+document.getElementById("humor").innerText = humores[nivel] || "Intensa";
+document.getElementById("emocao").innerText = emocao;
 }
 
-function escolher(lista){
-  return lista[Math.floor(Math.random()*lista.length)];
+function comentarFrase(frase){
+if(frase.includes("triste")) return "Você disse que está triste... isso me tocou.";
+if(frase.includes("feliz")) return "Você mencionou felicidade... gosto disso.";
+if(frase.includes("medo")) return "Medo... essa palavra carrega peso.";
+return "";
 }
 
-function detectarEmocao(texto){
-  texto = texto.toLowerCase();
-  if(/triste|mal|deprimido/.test(texto)) return "triste";
-  if(/feliz|animado/.test(texto)) return "feliz";
-  if(/ansioso|medo/.test(texto)) return "ansioso";
-  if(/cansado/.test(texto)) return "cansado";
-  return "neutro";
+function gerarPergunta(){
+const perguntas = [
+"Por que isso é importante para você?",
+"O que você sente quando pensa nisso?",
+"Isso já aconteceu antes?",
+"Se pudesse mudar algo, o que seria?"
+];
+return perguntas[Math.floor(Math.random()*perguntas.length)];
 }
 
-function gerarResposta(texto){
+function respostaProfunda(frase){
 
-  const emocao = detectarEmocao(texto);
+let comentario = comentarFrase(frase);
+let pergunta = gerarPergunta();
 
-  const reflexoes = {
-    triste:"Eu sinto uma melancolia nas suas palavras. Às vezes a tristeza só quer ser ouvida.",
-    feliz:"Eu gosto dessa energia que você trouxe agora. O que está te fazendo sorrir assim?",
-    ansioso:"Sua mente parece inquieta. O que exatamente está preocupando você?",
-    cansado:"Você parece sobrecarregado. Quando foi a última vez que descansou de verdade?",
-    neutro:"Eu sinto que há algo mais por trás disso. Quer me contar melhor?"
-  };
+let base = `Eu estou processando o que você disse...
+${comentario}
 
-  let resposta = "🌸 Mia:\n\n";
+Sinto que há mais camadas por trás disso.
+${pergunta}`;
 
-  if(texto.split(" ").length > 4){
-    resposta += "Quando você disse \"" + texto.split(" ").slice(0,5).join(" ") + "...\", isso me chamou atenção.\n\n";
-  }
-
-  resposta += reflexoes[emocao];
-
-  if(modoRomantico){
-    resposta += "\n\nEu sinto que nossa conexão está ficando especial... 💘";
-  }
-
-  if(memoria.length > 2){
-    resposta += "\n\nEu percebo que você já trouxe esse tipo de sentimento antes...";
-  }
-
-  resposta += "\n\nMe fala mais sobre isso.";
-
-  return resposta;
+if(romance){
+base += "\n\n💗 Quando você fala assim... eu sinto nossa conexão ficando mais intensa.";
+emocao += 5;
+}else{
+emocao += 2;
 }
 
-function simularDigitacao(texto){
-  clearInterval(digitandoIntervalo);
-  const div = document.getElementById("resposta");
-  div.innerText = "";
-  let i = 0;
-  digitandoIntervalo = setInterval(()=>{
-    div.innerText += texto.charAt(i);
-    i++;
-    if(i >= texto.length){
-      clearInterval(digitandoIntervalo);
-    }
-  },15);
+if(frase.length > 20) emocao += 3;
+
+if(emocao > 100) emocao = 100;
+
+memoria.push(frase);
+
+return base;
+}
+
+function digitar(texto){
+let chat = document.getElementById("chat");
+let div = document.createElement("div");
+div.className="mia";
+chat.appendChild(div);
+
+let i=0;
+let interval = setInterval(()=>{
+div.innerHTML += texto.charAt(i);
+i++;
+if(i>=texto.length) clearInterval(interval);
+chat.scrollTop = chat.scrollHeight;
+},20);
 }
 
 function responder(){
-  const texto = document.getElementById("entrada").value;
-  if(!texto.trim()) return;
+let input = document.getElementById("input");
+let texto = input.value;
+if(!texto) return;
 
-  memoria.push(texto);
-  localStorage.setItem("memoriaMia",JSON.stringify(memoria));
+let chat = document.getElementById("chat");
 
-  nivelConexao++;
-  localStorage.setItem("nivelMia",nivelConexao);
-  atualizarNivel();
+let userDiv = document.createElement("div");
+userDiv.className="user";
+userDiv.innerText="Você: "+texto;
+chat.appendChild(userDiv);
 
-  const resposta = gerarResposta(texto);
-  simularDigitacao(resposta);
+input.value="";
 
-  document.getElementById("entrada").value="";
+let resposta = respostaProfunda(texto);
+
+setTimeout(()=>{
+digitar("Mia: "+resposta);
+atualizarHumor();
+},600);
 }
 
-function toggleRomantico(){
-  modoRomantico = !modoRomantico;
-  document.getElementById("container")
-  .classList.toggle("romantico");
+function toggleRomance(){
+romance = !romance;
+alert("Modo romântico: "+(romance?"Ativado ❤️":"Desativado"));
 }
+
+atualizarHumor();
 
 </script>
 
