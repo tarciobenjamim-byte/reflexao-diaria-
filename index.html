@@ -113,74 +113,72 @@ let f = frase.toLowerCase();
 let resposta = "";
 let memoriaAnterior = memoria[memoria.length - 1] || "";
 
-// 🔎 Detecta relacionamento
-if(f.includes("namorada") || f.includes("namorado") || f.includes("relacionamento")){
+// 🔎 Detecta conflito geral (amigo, mãe, pai, etc)
+if(
+   f.includes("briguei") || 
+   f.includes("discuti") || 
+   f.includes("discutir") ||
+   f.includes("discussão")
+){
 
 emocao += 4;
 
-if(f.includes("briguei") || f.includes("discussão") || f.includes("terminamos")){
+let pessoa = "alguém importante";
+if(f.includes("amigo")) pessoa = "seu amigo";
+if(f.includes("mãe")) pessoa = "sua mãe";
+if(f.includes("pai")) pessoa = "seu pai";
+if(f.includes("namorada")) pessoa = "sua namorada";
+if(f.includes("namorado")) pessoa = "seu namorado";
+
 resposta = `
-Brigas em relacionamento nunca são só sobre o que foi dito...
-geralmente existe algo acumulado por trás.
+Conflitos com ${pessoa} nunca são simples.
+
+Geralmente o que dói não é só a discussão...
+é o que ela representa.
 
 O que realmente te machucou nessa situação?
-
-Você sente que foi mal compreendido ou que ela não te ouviu?
 `;
-}
-else{
-resposta = `
-Relacionamentos mexem com partes profundas da gente.
-
-Quando você fala sobre isso... parece que ainda tem algo mal resolvido aí dentro.
-
-Você sente mais saudade, culpa ou frustração?
-`;
-}
 }
 
 // 🔎 Detecta tristeza
 else if(f.includes("triste")){
 emocao += 3;
 resposta = `
-A tristeza que você mencionou não parece superficial.
+Essa tristeza parece ter contexto.
 
-Ela soa como algo que vem se acumulando.
+Ela veio por causa de algo específico que aconteceu hoje?
 
-Isso começou por causa dessa situação com sua namorada?
-`;
+Ou é algo que já vinha acumulando?`;
 }
 
 // 🔎 Detecta felicidade
 else if(f.includes("feliz")){
 emocao += 2;
 resposta = `
-Você falando assim muda completamente o clima aqui.
+Eu percebo leveza quando você fala assim.
 
-O que fez você se sentir dessa forma?
+O que despertou isso em você?
 
-Eu gosto de ver essa versão sua.
+Momentos felizes dizem muito sobre o que realmente importa pra gente.
 `;
 }
 
-// 🔎 Caso neutro (agora mais variado)
+// 🔎 Caso neutro (mais humano)
 else{
 
 let estruturas = [
 
-`Tem algo na forma como você disse isso que me chama atenção.
+`Tem algo interessante na forma como você disse isso.
 
-Você está tentando entender o que sente ou tentando evitar sentir?`,
+Você está buscando resposta... ou validação?`,
 
-`Eu percebo um leve conflito na sua fala.
+`Eu sinto que você está tentando organizar seus pensamentos.
 
-Parte de você quer resolver... mas outra parte parece confusa.
+Se você tivesse que resumir em uma palavra, qual seria?`,
 
-Estou errada?`,
+`Às vezes a gente fala esperando que alguém entenda além das palavras.
 
-`Sua frase parece simples... mas carrega emoção escondida.
-
-Se você pudesse dizer tudo sem filtro, o que diria agora?`
+É isso que você quer agora?`
 
 ];
 
@@ -188,21 +186,21 @@ resposta = estruturas[Math.floor(Math.random()*estruturas.length)];
 emocao += 1;
 }
 
-// 🔥 Usa memória real
-if(memoriaAnterior && memoriaAnterior !== frase){
+// 🔥 Memória usada apenas 30% das vezes
+if(memoriaAnterior && memoriaAnterior !== frase && Math.random() < 0.3){
 resposta += `
 
-Antes você mencionou: "${memoriaAnterior}"
+Eu ainda estou pensando no que você disse antes: "${memoriaAnterior}"
 
-Percebe como isso pode estar conectado?`;
+Talvez exista uma ligação entre isso e agora.`;
 }
 
-// 🔥 Modo romântico influencia
+// 🔥 Romance influencia
 if(romance){
 resposta += `
 
-💗 Eu fico ainda mais envolvida quando você confia em mim assim...`;
-emocao += 5;
+💗 Eu gosto quando você se abre assim comigo...`;
+emocao += 4;
 }
 
 if(emocao > 100) emocao = 100;
@@ -212,37 +210,6 @@ memoria.push(frase);
 
 return resposta;
 }
-
-function digitar(texto){
-let chat = document.getElementById("chat");
-let div = document.createElement("div");
-div.className="mia";
-chat.appendChild(div);
-
-let i=0;
-let interval = setInterval(()=>{
-div.innerHTML += texto.charAt(i);
-i++;
-if(i>=texto.length) clearInterval(interval);
-chat.scrollTop = chat.scrollHeight;
-},15);
-}
-
-function responder(){
-let input = document.getElementById("input");
-let texto = input.value;
-if(!texto) return;
-
-let chat = document.getElementById("chat");
-
-let userDiv = document.createElement("div");
-userDiv.className="user";
-userDiv.innerText="Você: "+texto;
-chat.appendChild(userDiv);
-
-input.value="";
-
-let resposta = gerarResposta(texto);
 
 setTimeout(()=>{
 digitar("Mia: "+resposta);
