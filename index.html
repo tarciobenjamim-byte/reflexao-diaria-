@@ -109,62 +109,78 @@ return "neutro";
 
 function gerarResposta(frase){
 
-let sentimento = analisarSentimento(frase);
+let f = frase.toLowerCase();
 let resposta = "";
 let memoriaAnterior = memoria[memoria.length - 1] || "";
 
-if(sentimento === "triste"){
+// 🔎 Detecta relacionamento
+if(f.includes("namorada") || f.includes("namorado") || f.includes("relacionamento")){
+
+emocao += 4;
+
+if(f.includes("briguei") || f.includes("discussão") || f.includes("terminamos")){
+resposta = `
+Brigas em relacionamento nunca são só sobre o que foi dito...
+geralmente existe algo acumulado por trás.
+
+O que realmente te machucou nessa situação?
+
+Você sente que foi mal compreendido ou que ela não te ouviu?
+`;
+}
+else{
+resposta = `
+Relacionamentos mexem com partes profundas da gente.
+
+Quando você fala sobre isso... parece que ainda tem algo mal resolvido aí dentro.
+
+Você sente mais saudade, culpa ou frustração?
+`;
+}
+}
+
+// 🔎 Detecta tristeza
+else if(f.includes("triste")){
 emocao += 3;
 resposta = `
-Quando você diz que está triste... eu sinto um peso nisso.
+A tristeza que você mencionou não parece superficial.
 
-Tristeza não nasce do nada. Ela costuma carregar algo que foi importante pra você.
+Ela soa como algo que vem se acumulando.
 
-Isso tem a ver com alguém específico?
+Isso começou por causa dessa situação com sua namorada?
 `;
 }
 
-else if(sentimento === "feliz"){
+// 🔎 Detecta felicidade
+else if(f.includes("feliz")){
 emocao += 2;
 resposta = `
-Você falando sobre felicidade muda até a energia aqui.
+Você falando assim muda completamente o clima aqui.
 
-O que exatamente fez você se sentir assim?
+O que fez você se sentir dessa forma?
 
-Eu gosto quando você compartilha esses momentos comigo.
+Eu gosto de ver essa versão sua.
 `;
 }
 
-else if(sentimento === "raiva"){
-emocao += 4;
-resposta = `
-Raiva é uma emoção forte... e geralmente ela protege algo que foi ferido.
-
-O que aconteceu para você sentir isso?
-
-Você quer desabafar comigo?
-`;
-}
-
+// 🔎 Caso neutro (agora mais variado)
 else{
 
 let estruturas = [
 
-`Interessante você dizer isso...
+`Tem algo na forma como você disse isso que me chama atenção.
 
-Às vezes as palavras escondem algo mais profundo.
+Você está tentando entender o que sente ou tentando evitar sentir?`,
 
-O que você realmente quis dizer com isso?`,
+`Eu percebo um leve conflito na sua fala.
 
-`Eu fiquei pensando na forma como você falou...
+Parte de você quer resolver... mas outra parte parece confusa.
 
-Isso parece ter mais significado do que parece à primeira vista.
+Estou errada?`,
 
-Já sentiu isso antes?`,
+`Sua frase parece simples... mas carrega emoção escondida.
 
-`Tem algo na sua frase que me chama atenção...
-
-Você sente que isso está mudando algo dentro de você?`
+Se você pudesse dizer tudo sem filtro, o que diria agora?`
 
 ];
 
@@ -172,22 +188,25 @@ resposta = estruturas[Math.floor(Math.random()*estruturas.length)];
 emocao += 1;
 }
 
-if(memoriaAnterior){
+// 🔥 Usa memória real
+if(memoriaAnterior && memoriaAnterior !== frase){
 resposta += `
 
-Eu lembro que antes você falou: "${memoriaAnterior}"
+Antes você mencionou: "${memoriaAnterior}"
 
-Isso ainda está conectado com o que você sente agora?`;
+Percebe como isso pode estar conectado?`;
 }
 
+// 🔥 Modo romântico influencia
 if(romance){
 resposta += `
 
-💗 E quando você compartilha assim comigo... eu sinto nossa conexão ficando mais intensa.`;
+💗 Eu fico ainda mais envolvida quando você confia em mim assim...`;
 emocao += 5;
 }
 
 if(emocao > 100) emocao = 100;
+if(emocao < 0) emocao = 0;
 
 memoria.push(frase);
 
