@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Reflexão Diária</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: none;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      background: #667eea;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #5563c1;
+    }
+
+    .resposta {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Como você está se sentindo hoje?</h2>
+    <textarea id="sentimento" placeholder="Digite aqui..."></textarea>
+    <button onclick="gerarResposta()">Enviar</button>
+    <div class="resposta" id="resposta"></div>
+  </div>
+
+  <script>
+    function gerarResposta() {
+      let texto = document.getElementById("sentimento").value.toLowerCase();
+      let resposta = "";
+
+      if (texto.includes("triste")) {
+        resposta = "Sinto muito que você esteja se sentindo assim. Dias difíceis passam, você é mais forte do que imagina.";
+      } 
+      else if (texto.includes("ansioso")) {
+        resposta = "Respire fundo. A ansiedade é só um momento, não é quem você é.";
+      } 
+      else if (texto.includes("feliz")) {
+        resposta = "Que coisa maravilhosa! Aproveite esse momento e espalhe essa energia.";
+      } 
+      else {
+        resposta = "Obrigado por compartilhar seus sentimentos. Lembre-se que você não está sozinho.";
+      }
+
+      document.getElementById("resposta").innerText = resposta;
+    }
+  </script>
+
+</body>
+</html>
